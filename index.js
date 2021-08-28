@@ -12,6 +12,10 @@ const app = express();
 // with the server. This middleware will give each user a unique "sessionID"
 // that will be used to identify the user's session. When a website automatically
 // recognises you, it's because you already have a sessionID created by the server.
+// eg. authentication systems rely on sessions to automatically log you in.
+// like when facebook, netflix etc. know who you are when you visit their websites.
+// sessions can also be used to store general info like cart, wishlist, language preferences etc.
+// sessions are stored in memory, so they are lost when the server restarts.
 app.use(session({
     secret: 'keyboard cat',
     resave: false,
