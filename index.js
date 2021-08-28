@@ -7,8 +7,6 @@ import session from 'express-session';
 
 const app = express();
 
-// TOP TEN MIDDLEWARES
-
 // 0. sessions 
 app.use(session({
     secret: 'keyboard cat',
@@ -47,19 +45,12 @@ app.use(express.urlencoded({ extended: true }))
 // 7. express.static - allows us to serve static files ( in this case from public folder )
 app.use(express.static('public'))
 
-
-// error handling middleware
+// 8. custom error handling middleware
 // any error that is thrown in the middlewares will be caught here
 app.use((err, req, res, next) => {
     console.log(err)
     accessLogStream.write(` ${req.method} ${req.path} ${err.message} \n`)
     res.status(500).send('Something broke!')
-})
-
-// END OF TOP TEN MIDDLEWARES
-app.get("/test", (req, res) => {
-    console.log(req.sessionID)
-    res.status(200).end()
 })
 
 // JWT
