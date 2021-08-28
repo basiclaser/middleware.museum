@@ -44,12 +44,15 @@ app.use(cors({
 }))
 
 // 5. express.json - allows us to read the JSON body of a request
+// and store it in req.body
 app.use(express.json())
 
 // 6. express.urlencoded - allows us to read any "HTML form data" body of a request
+// and store it in req.body
 app.use(express.urlencoded({ extended: true }))
 
 // 7. express.static - allows us to serve static files ( in this case from public folder )
+// this is how websites load their own CSS, JS, images etc. from a static public foler in the server. 
 app.use(express.static('public'))
 
 // 8. custom error handling middleware
