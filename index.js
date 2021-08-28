@@ -7,7 +7,11 @@ import session from 'express-session';
 
 const app = express();
 
-// 0. sessions 
+// 0. sessions
+// sessions are a representation of a client's relationship 
+// with the server. This middleware will give each user a unique "sessionID"
+// that will be used to identify the user's session. When a website automatically
+// recognises you, it's because you already have a sessionID created by the server.
 app.use(session({
     secret: 'keyboard cat',
     resave: false,
@@ -15,17 +19,16 @@ app.use(session({
     cookie: { secure: false }
   }))
 
-// 1. logging - allows us to log requests
+// 1. this custom middleware just logs the user's session ID 
 app.use((req, res, next) => {
-    // console.log(`${req.method} ${req.path}`)
     console.log(req.sessionID)
     next()
 })
 
-// 2. morgan - allows us to log requests
+// 2. morgan - a common package for logging API request information
 app.use(morgan('dev'))
 
-// 3. morgan - morgan can also logs to a file
+// 3. morgan - morgan can also logs to a file - in this case to "access.log"
 var accessLogStream = fs.createWriteStream(path.join(process.cwd(), 'access.log'), { flags: 'a' })
 app.use(morgan('combined', { stream: accessLogStream }))
 
