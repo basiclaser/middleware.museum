@@ -4,6 +4,11 @@ import morgan from 'morgan';
 import fs from 'fs';
 import path from 'path';
 import session from 'express-session';
+import {
+    emailRouter, 
+    userRouter, 
+} from './routes/index.js';
+import isAuthorized from './middlewares/isAuthorized.js';
 
 const app = express();
 
@@ -25,7 +30,7 @@ app.use(session({
 
 // 1. this custom middleware just logs the user's session ID 
 app.use((req, res, next) => {
-    console.log(req.sessionID)
+    console.log(req.sessionID, req.session.userId)
     next()
 })
 
@@ -55,21 +60,38 @@ app.use(express.urlencoded({ extended: true }))
 // this is how websites load their own CSS, JS, images etc. from a static public foler in the server. 
 app.use(express.static('public'))
 
+
+
+
+// // 9. authorization middleware - standard pattern 
+    // // public routes - you don't need to be logged in for these
+    // app.use('/api/users', userRouter)
+
+    // // protected routes - you need to be logged in for these
+    // app.use('/api/email', isAuthorized, emailRouter)
+
+// 10. authorization middleware - breakpoint pattern ( i made this name up :P )
+// with the breakpoint pattern we declare all public routes,
+// then drop in an auth middleware, and any routes after that will need authentication
+
+// public... 
+app.use('/api/users', userRouter)
+
+// here's our auth breakpoint middleware - everything after, a user must be logged in.
+app.use(isAuthorized);
+
+app.use('/api/emails', emailRouter)
+
 // 8. custom error handling middleware
 // any error that is thrown in the middlewares will be caught here
 app.use((err, req, res, next) => {
-    console.log(err)
     accessLogStream.write(` ${req.method} ${req.path} ${err.message} \n`)
-    res.status(500).send('Something broke!')
+    console.log(err)
+    res.status(500).send(err.message)
 })
-
 // JWT
 
 // templating system??
-
-// authentication???
-
-// authentication??? OKTA, 0auth, passport, etc.
 
 app.listen(8080, () => {
     console.log('Server is running on port 8080')
